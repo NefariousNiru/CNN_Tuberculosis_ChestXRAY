@@ -16,6 +16,8 @@ def run_tb_classifier():
     print(f"Training started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}")
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using Device: {device}")
+
     transform = augment.get_transforms()
     train_data = datasets.ImageFolder('dataset/chest_XRAY/train', transform=transform)
     val_data = datasets.ImageFolder('dataset/chest_XRAY/test', transform=transform)
