@@ -41,7 +41,7 @@ def train_model(model, train_loader, val_loader, optimizer, criterion, device, e
         # Save the best model based on validation loss
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), '../models/best_model_v1.pth')
+            torch.save(model.state_dict(), 'models/best_model_v1.pth')
             print("Model saved!")
 
 
