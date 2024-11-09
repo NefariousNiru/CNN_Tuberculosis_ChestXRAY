@@ -2,45 +2,46 @@ import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
-from torchvision import datasets
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
-from util import augment
-from CNN.CNN import TBClassifier
+from util import augment, load
+from CNN.CNN import ChestXRayClassifier
 from CNN import train_test
 
-
-def run_tb_classifier():
+def init_time_device():
     start_time = time.time()
-    print(f"Training started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}")
+    print(f"Model started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}")
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using Device: {device}")
 
-    transform = augment.get_transforms()
-    train_data = datasets.ImageFolder('dataset/chest_XRAY/train', transform=transform)
-    val_data = datasets.ImageFolder('dataset/chest_XRAY/test', transform=transform)
+    return start_time, device
 
-    # Load training and validation data
-    train_loader = DataLoader(train_data, batch_size=32, shuffle=True)
-    val_loader = DataLoader(val_data, batch_size=32, shuffle=False)
+def run_chest_xray_classifier():
+    # Start timer and initialise GPU/CPU
+    start_time, device = init_time_device()
+
+    #  Get dataset loaders and data
+    train_loader, train_data, val_loader, val_data, classes = load.load_data()
 
     # Calculate class weights for imbalance
     class_weights = compute_class_weight(
         class_weight='balanced',
-        classes=np.unique(train_data.targets),
-        y=train_data.targets
+        classes=np.arange(len(classes)),
+        y=[y for _, y in train_loader.dataset]
     )
     class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
 
-    model = TBClassifier().to(device)
-    criterion = nn.BCEWithLogitsLoss()
+
+    model = ChestXRayClassifier(num_classes=len(classes)).to(device)
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
-    train_test.train_model(model, train_loader, val_loader, optimizer, criterion, device)
+    print("Running Training")
+    train_test.train_model(model, train_loader, val_loader, optimizer, criterion, device, classes)
 
-    train_test.evaluate_model(model, val_loader, criterion, device)
+    print("Running Test")
+    train_test.test_model(model, val_loader, criterion, device, classes)
 
     end_time = time.time()
     print(f"Training finished at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))}")
@@ -50,6 +51,6 @@ def run_tb_classifier():
     print(f"Total runtime: {total_time:.2f} seconds")
 
 if __name__ == "__main__":
-    run_tb_classifier()
+    run_chest_xray_classifier()
 
 
