@@ -96,7 +96,7 @@ def test_model(model, val_loader, criterion, device, class_names):
 
     # Generate classification report
     report = classification_report(all_labels, all_predictions, target_names=class_names, zero_division=0)
-    print("\nClassification Report:\n", report)
+    print("Classification Report:\n", report)
 
     # Generate confusion matrix
     conf_matrix = confusion_matrix(all_labels, all_predictions)
