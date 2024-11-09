@@ -45,7 +45,7 @@ def run_chest_xray_classifier():
     end_time = runtime_counter.get_end_time()
     total_time = runtime_counter.get_time_difference(start_time, end_time)
     runtime_counter.print_time(end_time, "finished", "Model")
-    runtime_counter.print_time(total_time, "total run time", "Model")
+    print(f"Total Time: {total_time}")
 
 if __name__ == "__main__":
     run_chest_xray_classifier()
