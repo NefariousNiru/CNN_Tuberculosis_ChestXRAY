@@ -4,13 +4,13 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
-from util import augment, load
+from util import augment, load, runtime_counter
 from CNN.CNN import ChestXRayClassifier
 from CNN import train_test
 
 def init_time_device():
-    start_time = time.time()
-    print(f"Model started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}")
+    start_time = runtime_counter.get_start_time()
+    runtime_counter.print_time(start_time, "started", "Model")
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using Device: {device}")
@@ -32,7 +32,6 @@ def run_chest_xray_classifier():
     )
     class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
 
-
     model = ChestXRayClassifier(num_classes=len(classes)).to(device)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
@@ -43,12 +42,10 @@ def run_chest_xray_classifier():
     print("Running Test")
     train_test.test_model(model, val_loader, criterion, device, classes)
 
-    end_time = time.time()
-    print(f"Training finished at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))}")
-
-    # Calculate and print the total duration
-    total_time = end_time - start_time
-    print(f"Total runtime: {total_time:.2f} seconds")
+    end_time = runtime_counter.get_end_time()
+    total_time = runtime_counter.get_time_difference(start_time, end_time)
+    runtime_counter.print_time(end_time, "finished", "Model")
+    runtime_counter.print_time(total_time, "total run time", "Model")
 
 if __name__ == "__main__":
     run_chest_xray_classifier()
