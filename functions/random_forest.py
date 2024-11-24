@@ -8,11 +8,10 @@ def run_rf(train_feature_file, train_label_file, test_feature_file, test_label_f
         data_util.feature_pre_processing(train_feature_file, train_label_file, test_feature_file, test_label_file, smote=True))
 
     param_dist = {
-        'n_estimators': randint(100, 500),
-        'max_depth': [10, 20, 30, None],
-        'max_features': ['sqrt', 'log2', None],
+        'n_estimators': randint(100, 300),
+        'max_depth': [10, 20],
         'min_samples_split': randint(2, 20),
-        'min_samples_leaf': randint(1, 10),
+        'min_samples_leaf': randint(1, 5),
     }
 
     rf_model = RandomForestClassifier(random_state=42, n_jobs=-1)
@@ -20,9 +19,9 @@ def run_rf(train_feature_file, train_label_file, test_feature_file, test_label_f
     random_search = RandomizedSearchCV(
         estimator=rf_model,
         param_distributions=param_dist,
-        n_iter=50,
+        n_iter=20,
         scoring='f1_weighted',
-        cv=3,
+        cv=2,
         verbose=2,
         n_jobs=-1,
         random_state=42
