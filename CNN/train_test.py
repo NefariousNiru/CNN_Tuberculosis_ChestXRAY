@@ -1,8 +1,5 @@
-import time
-from util import runtime_counter
+from util import time_util
 import numpy as np
-import torch
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 import torch
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 
@@ -10,9 +7,9 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_auc_sco
 def train_model(model, train_loader, val_loader, optimizer, criterion, device, class_names, epochs=20):
     best_val_loss = float('inf')
     for epoch in range(epochs):
-        start_time = runtime_counter.get_start_time()
+        start_time = time_util.get_start_time()
         print(f"Epoch [{epoch + 1}/{epochs}]")
-        runtime_counter.print_time(start_time, "started", "Epoch")
+        time_util.print_time(start_time, "started", "Epoch")
 
         model.train()
         running_loss = 0.0
@@ -42,8 +39,8 @@ def train_model(model, train_loader, val_loader, optimizer, criterion, device, c
         train_acc = correct / total
         val_loss, val_acc = test_model(model, val_loader, criterion, device, class_names)
 
-        end_time = runtime_counter.get_end_time()
-        epoch_time = runtime_counter.get_time_difference(start_time, end_time)
+        end_time = time_util.get_end_time()
+        epoch_time = time_util.get_time_difference(start_time, end_time)
 
         print(f'Loss: {running_loss / len(train_loader):.4f}, '
               f'Train Acc: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}, '
