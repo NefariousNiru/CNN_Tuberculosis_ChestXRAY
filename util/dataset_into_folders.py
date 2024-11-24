@@ -3,9 +3,9 @@ import shutil
 from sklearn.model_selection import train_test_split
 
 # Define constants for dataset paths and split ratio
-DATASET_DIR = '../dataset/chest_XRAY'
-TRAIN_DIR = '../dataset/chest_XRAY/train/'
-TEST_DIR = '../dataset/chest_XRAY/test/'
+DATASET_DIR = '../dataset/ChestXRay'
+TRAIN_DIR = '../dataset/ChestXRay/train/'
+TEST_DIR = '../dataset/ChestXRay/test/'
 TEST_SIZE = 0.2
 SEED = 42
 
