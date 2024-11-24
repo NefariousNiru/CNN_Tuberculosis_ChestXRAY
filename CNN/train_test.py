@@ -1,10 +1,15 @@
+from matplotlib import pyplot as plt
 from util import time_util
 import numpy as np
 import torch
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 
-
 def train_model(model, train_loader, val_loader, optimizer, criterion, device, class_names, epochs=20):
+    train_losses = []
+    val_losses = []
+    train_accuracies = []
+    val_accuracies = []
+
     best_val_loss = float('inf')
     for epoch in range(epochs):
         start_time = time_util.get_start_time()
@@ -19,7 +24,7 @@ def train_model(model, train_loader, val_loader, optimizer, criterion, device, c
             images, labels = images.to(device), labels.to(device).long()
 
             # Forward pass
-            outputs = model(images)  # Shape: (batch_size, num_classes)
+            outputs = model(images)
 
             # Calculate loss
             loss = criterion(outputs, labels)
@@ -36,21 +41,40 @@ def train_model(model, train_loader, val_loader, optimizer, criterion, device, c
             correct += (predicted == labels).sum().item()
             total += labels.size(0)
 
+        # Calculate training accuracy and average loss for the epoch
         train_acc = correct / total
+        train_loss = running_loss / len(train_loader)
+        train_losses.append(train_loss)
+        train_accuracies.append(train_acc)
+
+        # Validate the model
         val_loss, val_acc = test_model(model, val_loader, criterion, device, class_names)
+        val_losses.append(val_loss)
+        val_accuracies.append(val_acc)
 
         end_time = time_util.get_end_time()
         epoch_time = time_util.get_time_difference(start_time, end_time)
 
-        print(f'Loss: {running_loss / len(train_loader):.4f}, '
+        print(f'Loss: {train_loss:.4f}, '
               f'Train Acc: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}, '
               f'Time: {epoch_time:.2f} seconds')
 
         # Save the best model based on validation loss
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), 'models/best_model_v2.pth')
+            torch.save(model.state_dict(), 'models/pre_trained_v1.pth')
             print("Model saved!")
+
+    # Plot training and validation losses
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(1, len(train_losses) + 1), train_losses, label='Train Loss', marker='o')
+    plt.plot(range(1, len(val_losses) + 1), val_losses, label='Validation Loss', marker='o')
+    plt.title('Loss vs Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.grid()
+    plt.show()
 
 
 def test_model(model, val_loader, criterion, device, class_names):

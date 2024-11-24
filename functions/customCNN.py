@@ -29,7 +29,12 @@ def run_custom_cnn():
     print("Running Training")
     train_test.train_model(model, train_loader, val_loader, optimizer, criterion, device, classes)
 
-    print("Running Test")
+    # Load the best model after training
+    print("Loading best model for final evaluation...")
+    model.load_state_dict(torch.load('models/pre_trained_v1.pth'))
+
+    # Final evaluation on the validation set
+    print("Evaluating the best model...")
     train_test.test_model(model, val_loader, criterion, device, classes)
 
     end_time = time_util.get_end_time()
