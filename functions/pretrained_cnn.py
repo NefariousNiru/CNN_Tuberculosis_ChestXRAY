@@ -34,7 +34,8 @@ def run_pretrained_model():
         criterion=criterion,
         device=device,
         class_names=classes,
-        epochs=20
+        model_name='pre_trained_v1.pth',
+        epochs=5
     )
 
     # Load the best model after training
@@ -43,7 +44,7 @@ def run_pretrained_model():
 
     # Final evaluation on the validation set
     print("Evaluating the best model...")
-    train_test.test_model(model, val_loader, criterion, device, classes)
+    train_test.predict(model, val_loader, criterion, device, classes)
 
     end_time = time_util.get_end_time()
     total_time = time_util.get_time_difference(start_time, end_time)

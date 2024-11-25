@@ -30,9 +30,13 @@ class CBAM(nn.Module):
         return sa * ca
 
 class DenseNet121WithCBAM(nn.Module):
-    def __init__(self, num_classes=4):
+    def __init__(self, retrain=False, num_classes=4):
         super(DenseNet121WithCBAM, self).__init__()
         self.base_model = densenet121(weights=DenseNet121_Weights.DEFAULT)
+
+        for param in self.base_model.parameters():
+            param.requires_grad = not retrain
+
         self.features = nn.Sequential(
             self.base_model.features,
             CBAM(channels=1024)  # Apply CBAM after DenseNet features

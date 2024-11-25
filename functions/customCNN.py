@@ -7,7 +7,7 @@ from util import data_util, time_util
 from CNN.CNN import ChestXRayClassifier
 from CNN import train_test
 
-def run_custom_cnn():
+def run_custom_cnn(predict=False):
     # Start timer and initialise GPU/CPU
     start_time, device = data_util.init_time_device()
 
@@ -26,16 +26,17 @@ def run_custom_cnn():
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
-    print("Running Training")
-    train_test.train_model(model, train_loader, val_loader, optimizer, criterion, device, classes)
+    if not predict:
+        print("Running Training")
+        train_test.train_model(model, train_loader, val_loader, optimizer, criterion, device, classes, 'custom_model_v1.pth', epochs=30)
+        return
 
     # Load the best model after training
     print("Loading best model for final evaluation...")
-    model.load_state_dict(torch.load('models/pre_trained_v1.pth'))
+    model.load_state_dict(torch.load('models/custom_model_v1.pth'))
 
-    # Final evaluation on the validation set
-    print("Evaluating the best model...")
-    train_test.test_model(model, val_loader, criterion, device, classes)
+    print("Running Predictions on test set")
+    train_test.predict(model, val_loader, criterion, device, classes)
 
     end_time = time_util.get_end_time()
     total_time = time_util.get_time_difference(start_time, end_time)
