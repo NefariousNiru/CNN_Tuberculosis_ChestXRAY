@@ -25,7 +25,7 @@ This project explores Chest X-ray classification using both classical machine le
 
 ## How to Run
 
-1. **Get the Dataset here**:
+1. **[Get the Dataset](https://outlookuga-my.sharepoint.com/:u:/g/personal/nb65306_uga_edu/EQjC4U6x-JhOuCuKh9N76ykBW7RSh8AnAREcakSN-RdAAA?e=gKDCMv)**
 2. **Prepare Dataset**:
    Organize images in the following structure:
    ```plaintext
@@ -47,3 +47,13 @@ This project explores Chest X-ray classification using both classical machine le
   ```
   
 4. ```Run main.py```
+
+---
+### References:
+1. [Rahman, Tawsifur. Tuberculosis (TB) Chest X-Ray Dataset](https://www.kaggle.com/datasets/tawsifurrahman/tuberculosis-tb-chest-xray-dataset). Kaggle, Accessed 23 Nov. 2024.
+
+2. [Pritpal2873. Chest X-Ray Dataset (4 Categories)](https://www.kaggle.com/datasets/pritpal2873/chest-x-ray-dataset-4-categories/data). Kaggle, Accessed 23 Nov. 2024.
+
+3. [Rahman, Tawsifur, et al. COVID-19 Radiography Database](https://www.kaggle.com/datasets/tawsifurrahman/covid19-radiography-database?select=COVID-19_Radiography_Dataset). Kaggle, Accessed 23 Nov. 2024.
+
+4. [Tuberculosis and Chest X-Ray Dataset (TCX)](https://data.mendeley.com/datasets/8j2g3csprk/2). Mendeley Data, Accessed 23 Nov. 2024.
